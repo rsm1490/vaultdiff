@@ -27,12 +27,13 @@ func init() {
 
 func runAudit(cmd *cobra.Command, args []string) error {
 	path := args[0]
-	var versionA, versionB int
-	if _, err := fmt.Sscan(args[1], &versionA); err != nil {
-		return fmt.Errorf("invalid version-a %q: %w", args[1], err)
+	versionA, err := parseVersion(args[1], "version-a")
+	if err != nil {
+		return err
 	}
-	if _, err := fmt.Sscan(args[2], &versionB); err != nil {
-		return fmt.Errorf("invalid version-b %q: %w", args[2], err)
+	versionB, err := parseVersion(args[2], "version-b")
+	if err != nil {
+		return err
 	}
 
 	client, err := vault.NewClient()
@@ -72,4 +73,16 @@ func runAudit(cmd *cobra.Command, args []string) error {
 	fmt.Fprintf(os.Stdout, "Audit entry written to %s\n", auditLogFile)
 	fmt.Fprintf(os.Stdout, "Changes: +%d -%d ~%d\n", summary.Added, summary.Removed, summary.Modified)
 	return nil
+}
+
+// parseVersion converts a string argument into a positive integer version number.
+func parseVersion(s, name string) (int, error) {
+	var v int
+	if _, err := fmt.Sscan(s, &v); err != nil {
+		return 0, fmt.Errorf("invalid %s %q: %w", name, s, err)
+	}
+	if v <= 0 {
+		return 0, fmt.Errorf("invalid %s %q: must be a positive integer", name, s)
+	}
+	return v, nil
 }
