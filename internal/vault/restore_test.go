@@ -1,6 +1,7 @@
 package vault
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -40,6 +41,9 @@ func TestRestoreResult_FailureState(t *testing.T) {
 	}
 	if r.Error == nil {
 		t.Error("expected non-nil error")
+	}
+	if r.Error.Error() != "permission denied" {
+		t.Errorf("expected error message 'permission denied', got %q", r.Error.Error())
 	}
 }
 
