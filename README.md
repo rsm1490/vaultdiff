@@ -33,7 +33,20 @@ vaultdiff secret/data/myapp/config --audit
 
 # Output diff in JSON format
 vaultdiff secret/data/myapp/config --v1 1 --v2 2 --format json
+
+# Mask sensitive values in output
+vaultdiff secret/data/myapp/config --v1 1 --v2 2 --mask
 ```
+
+### Flags
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--v1` | First version to compare | latest - 1 |
+| `--v2` | Second version to compare | latest |
+| `--audit` | Show all version-to-version changes | false |
+| `--format` | Output format: `text` or `json` | `text` |
+| `--mask` | Mask secret values in output | false |
 
 ### Example Output
 
